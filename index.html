@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obfuscator v1.0 — by hero684k</title>
+    <style>
+        :root {
+            --bg: #06060E;
+            --card: rgba(16, 16, 30, 0.95);
+            --border: #252540;
+            --accent: #A78BFA;
+            --accent2: #60A5FA;
+            --text: #E2E8F0;
+            --muted: #8B90A0;
+            --green: #3FB950;
+            --orange: #D29922;
+            --red: #F85149;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 30% 0%, rgba(167,139,250,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 100%, rgba(96,165,250,0.04) 0%, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            font-size: 56px;
+            margin-bottom: 12px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .description {
+            text-align: center;
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        /* Screenshot */
+        .screenshot {
+            margin-bottom: 40px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        }
+
+        .screenshot img {
+            width: 100%;
+            display: block;
+        }
+
+        .modes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .mode-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .mode-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(167,139,250,0.1);
+        }
+
+        .mode-icon { font-size: 32px; margin-bottom: 10px; }
+
+        .mode-card h3 {
+            font-size: 18px;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .mode-card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .levels-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .levels {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 44px;
+        }
+
+        .level {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .level:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .level-icon { font-size: 24px; margin-bottom: 6px; }
+
+        .level h4 {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .level p {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .level.easy h4 { color: var(--green); }
+        .level.medium h4 { color: var(--orange); }
+        .level.hard h4 { color: #F0883E; }
+        .level.maximum h4 { color: var(--red); }
+
+        .lang-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+
+        .lang-tag {
+            background: rgba(167,139,250,0.08);
+            border: 1px solid rgba(167,139,250,0.2);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .download-wrapper {
+            text-align: center;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent) 0%, #8B5CF6 40%, var(--accent2) 100%);
+            color: white;
+            text-decoration: none;
+            padding: 18px 48px;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 40px rgba(167,139,250,0.35);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 8px 40px rgba(167,139,250,0.35); }
+            50% { box-shadow: 0 8px 70px rgba(167,139,250,0.6); }
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 50px rgba(167,139,250,0.55);
+        }
+
+        .download-info {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 14px;
+        }
+
+        .download-info a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .download-info a:hover { text-decoration: underline; }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .footer-line {
+            width: 60px;
+            height: 1px;
+            background: var(--border);
+            margin: 0 auto 16px;
+        }
+
+        @media (max-width: 600px) {
+            .modes { grid-template-columns: 1fr; }
+            .levels { grid-template-columns: repeat(2, 1fr); }
+            h1 { font-size: 32px; }
+            .card { padding: 28px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <div class="container">
+
+        <div class="hero">
+            <div class="logo">⚡</div>
+            <h1>OBFUSCATOR</h1>
+            <div class="subtitle">v1.0 · by hero684k</div>
+        </div>
+
+        <div class="card">
+
+            <p class="description">
+                Universal code obfuscator. Protect your source code in seconds.
+                Dark theme, portable EXE, no installation required.
+            </p>
+
+            <!-- Screenshot -->
+            <div class="screenshot">
+                <img src="photos/screenshot1.png" alt="Obfuscator Screenshot" loading="lazy">
+            </div>
+
+            <div class="modes">
+                <div class="mode-card">
+                    <div class="mode-icon">🌐</div>
+                    <h3>Universal Mode</h3>
+                    <p>Works with any code. Minification, comment removal, string encryption.</p>
+                </div>
+                <div class="mode-card">
+                    <div class="mode-icon">🎯</div>
+                    <h3>By Type Mode</h3>
+                    <p>Language-specific obfuscation. Renames variables, functions, classes.</p>
+                </div>
+            </div>
+
+            <div class="levels-title">Obfuscation Levels</div>
+            <div class="levels">
+                <div class="level easy">
+                    <div class="level-icon">🟢</div>
+                    <h4>Easy</h4>
+                    <p>Minify & strip comments</p>
+                </div>
+                <div class="level medium">
+                    <div class="level-icon">🟡</div>
+                    <h4>Medium</h4>
+                    <p>+ Rename variables</p>
+                </div>
+                <div class="level hard">
+                    <div class="level-icon">🟠</div>
+                    <h4>Hard</h4>
+                    <p>+ Encrypt strings</p>
+                </div>
+                <div class="level maximum">
+                    <div class="level-icon">🔴</div>
+                    <h4>Maximum</h4>
+                    <p>+ XOR + dead code</p>
+                </div>
+            </div>
+
+            <div class="lang-tags">
+                <span class="lang-tag">🐍 Python</span>
+                <span class="lang-tag">☕ Java</span>
+                <span class="lang-tag">🎯 Kotlin</span>
+                <span class="lang-tag">📜 JavaScript</span>
+                <span class="lang-tag">🔷 TypeScript</span>
+                <span class="lang-tag">🌙 Lua</span>
+                <span class="lang-tag">💻 C/C++</span>
+                <span class="lang-tag">🔌 C#</span>
+                <span class="lang-tag">🐘 PHP</span>
+                <span class="lang-tag">💎 Ruby</span>
+            </div>
+
+            <div class="download-wrapper">
+                <a href="https://github.com/hero684k/obfuscator/releases/latest/download/Obfuscator.exe" class="download-btn">
+                    ⬇ DOWNLOAD
+                </a>
+                <p class="download-info">
+                    Portable EXE · No install · No console<br>
+                    <a href="https://github.com/hero684k/obfuscator">GitHub</a> ·
+                    <a href="https://github.com/hero684k/obfuscator/blob/main/LICENSE">MIT License</a>
+                </p>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            <div class="footer-line"></div>
+            © 2026 hero684k · MIT License<br>
+            Not affiliated with any company or organization.
+        </div>
+
+    </div>
+
+</body>
+</html>
